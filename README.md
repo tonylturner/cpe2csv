@@ -2,9 +2,9 @@
 
 cpe2csv solves a very basic issue with me hating dealing with XML and wanting an easier way to work with Common Platform Enumeration (CPE) data in a more spreadsheet friendly format. It retrieves the latest copy of the CPE dictionary from https://nvd.nist.gov/products/cpe or you can provide your own copy and performs the following operations:
 
-Converts the XML to CSV and extracts CPE URI string, name and an array of references from the dictionary
-Parses the URI and extracts part, vendor, product, version, update, edition and language and write this to same CSV file
-Cleans up the downloaded artifacts
+* Converts the XML to CSV and extracts CPE URI string, name and an array of references from the dictionary
+* Parses the URI and extracts part, vendor, product, version, update, edition and language and write this to same CSV file
+* Cleans up the downloaded artifacts
 
 
 # Usage
