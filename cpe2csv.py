@@ -65,7 +65,6 @@ def parse_xml(xml_file, csv_file, verbose=False):
 
 def update_xml(verbose=False):
     """Downloads the current CPE XML file and extracts it."""
-    print("Fetching the latest XML file from NVD...")
 
     if verbose:
         print("Fetching the latest XML file from NVD...")
