@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=46.4.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cpe2csv"
+authors = [
+    {name = "Tony Turner", email = "tony@opswright.com"},
+]
+description = "A tool to convert CPE XML to CSV"
+readme = "README.md"
+version = "0.1"
+
+[dependencies]
+requests = "^2.31.0"
