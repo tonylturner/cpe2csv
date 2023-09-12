@@ -82,6 +82,12 @@ def update_xml(verbose=False):
 
     return LOCAL_XML
 
+def tmp_cleanup(verbose=False):
+    """Removes the temporary files."""
+    if verbose:
+        print("Cleaning up downloaded files...")
+    os.remove(LOCAL_ZIP)
+    os.remove(LOCAL_XML)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A tool to convert CPE XML to CSV. The script can either fetch the XML from NVD or you can provide it.")
@@ -116,7 +122,4 @@ if __name__ == "__main__":
     parse_xml(xml_file, args.csv_file, args.verbose)
 
     if args.update:
-        if args.verbose:
-            print("Cleaning up downloaded files...")
-        os.remove(LOCAL_ZIP)
-        os.remove(LOCAL_XML)
+        tmp_cleanup(verbose=args.verbose)
