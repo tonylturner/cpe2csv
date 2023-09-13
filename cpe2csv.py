@@ -5,6 +5,11 @@ import requests
 import zipfile
 import os
 
+
+NVD_URL = "https://nvd.nist.gov/feeds/xml/cpe/dictionary/official-cpe-dictionary_v2.3.xml.zip"
+LOCAL_ZIP = "official-cpe-dictionary_v2.3.xml.zip"
+LOCAL_XML = "official-cpe-dictionary_v2.3.xml"
+
 def parse_cpe(cpe_string):
     """Parse a CPE string and return its components."""
     parts = (cpe_string.split(":") + ["" for _ in range(8)])[:8]
@@ -57,6 +62,32 @@ def parse_xml(xml_file, csv_file, verbose=False):
     if verbose:
         print(f"Conversion from {xml_file} to {csv_file} completed.")
 
+
+def update_xml(verbose=False):
+    """Downloads the current CPE XML file and extracts it."""
+
+    if verbose:
+        print("Fetching the latest XML file from NVD...")
+    
+    response = requests.get(NVD_URL, stream=True)
+    with open(LOCAL_ZIP, 'wb') as f:
+        for chunk in response.iter_content(chunk_size=8192):
+            f.write(chunk)
+
+    if verbose:
+        print("Unzipping the fetched file...")
+    with zipfile.ZipFile(LOCAL_ZIP, 'r') as zip_ref:
+        zip_ref.extractall()
+
+    return LOCAL_XML
+
+def tmp_cleanup(verbose=False):
+    """Removes the temporary files."""
+    if verbose:
+        print("Cleaning up downloaded files...")
+    os.remove(LOCAL_ZIP)
+    os.remove(LOCAL_XML)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A tool to convert CPE XML to CSV. The script can either fetch the XML from NVD or you can provide it.")
     
@@ -76,25 +107,7 @@ if __name__ == "__main__":
 
     xml_file = None
     if args.update:
-        NVD_URL = "https://nvd.nist.gov/feeds/xml/cpe/dictionary/official-cpe-dictionary_v2.3.xml.zip"
-        LOCAL_ZIP = "official-cpe-dictionary_v2.3.xml.zip"
-        LOCAL_XML = "official-cpe-dictionary_v2.3.xml"
-        print("Fetching the latest XML file from NVD...")
-
-        if args.verbose:
-            print("Fetching the latest XML file from NVD...")
-        
-        response = requests.get(NVD_URL, stream=True)
-        with open(LOCAL_ZIP, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
-
-        if args.verbose:
-            print("Unzipping the fetched file...")
-        with zipfile.ZipFile(LOCAL_ZIP, 'r') as zip_ref:
-            zip_ref.extractall()
-
-        xml_file = LOCAL_XML
+        xml_file = update_xml(verbose=args.verbose)
 
     elif args.input:
         if os.path.exists(args.input):
@@ -108,7 +121,4 @@ if __name__ == "__main__":
     parse_xml(xml_file, args.csv_file, args.verbose)
 
     if args.update:
-        if args.verbose:
-            print("Cleaning up downloaded files...")
-        os.remove(LOCAL_ZIP)
-        os.remove(LOCAL_XML)
+        tmp_cleanup(verbose=args.verbose)
